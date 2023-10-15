@@ -56,3 +56,5 @@ docs/_build/
 .secret
 *.sqlite3
 .pytest.restart
+
+.idea/

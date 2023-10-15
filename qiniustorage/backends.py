@@ -18,7 +18,7 @@ from django.conf import settings
 from django.core.files.base import File
 from django.core.files.storage import Storage
 from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation
-from django.utils.encoding import force_text, force_bytes, filepath_to_uri
+from django.utils.encoding import force_str, force_bytes, filepath_to_uri
 from django.utils.deconstruct import deconstructible
 
 from .utils import QiniuError, bucket_lister
@@ -97,7 +97,7 @@ class QiniuStorage(Storage):
         the directory specified by the LOCATION setting.
         """
 
-        base_path = force_text(self.location)
+        base_path = force_str(self.location)
         base_path = base_path.rstrip('/')
 
         final_path = urljoin(base_path.rstrip('/') + "/", name)
@@ -210,7 +210,7 @@ class QiniuStaticStorage(QiniuStorage):
 class QiniuPrivateStorage(QiniuStorage):
     def url(self, name):
         raw_url = super(QiniuPrivateStorage, self).url(name)
-        return force_text(self.auth.private_download_url(raw_url))
+        return force_str(self.auth.private_download_url(raw_url))
 
 
 class QiniuFile(File):
@@ -249,7 +249,7 @@ class QiniuFile(File):
         if 'b' in self._mode:
             return data
         else:
-            return force_text(data)
+            return force_str(data)
 
     def write(self, content):
         if 'w' not in self._mode:

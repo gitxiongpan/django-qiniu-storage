@@ -16,15 +16,15 @@ def main():
         ret, eof, info = bucket.list(QINIU_BUCKET_NAME, limit=100)
 
         if ret is None:
-            print info
+            print(info)
             break
 
         for item in ret['items']:
             name = item['key']
-            print "Deleting %s ..." % name
+            print("Deleting %s ..." % name)
             ret, info = bucket.delete(QINIU_BUCKET_NAME, name)
             if ret is None:
-                print info
+                print(info)
         if eof:
             break
 

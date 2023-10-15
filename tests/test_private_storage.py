@@ -9,17 +9,19 @@ import unittest
 import uuid
 
 import logging
-LOGGING_FORMAT = '\n%(levelname)s %(asctime)s %(message)s'
-logging.basicConfig(level=logging.INFO, format=LOGGING_FORMAT)
-logger = logging.getLogger(__name__)
 
 import six
 import django
 from requests.exceptions import ConnectionError
-
 from qiniu import BucketManager
-
 from .utils import retry
+from django.conf import settings
+from qiniustorage.backends import QiniuPrivateStorage, QiniuFile, get_qiniu_config
+from qiniustorage.utils import QiniuError
+
+LOGGING_FORMAT = '\n%(levelname)s %(asctime)s %(message)s'
+logging.basicConfig(level=logging.INFO, format=LOGGING_FORMAT)
+logger = logging.getLogger(__name__)
 
 
 # Add repo/demo_site to sys.path
@@ -30,12 +32,10 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "demo_site.settings")
 try:
     django.setup()
 except AttributeError:
-   # Setup isn't necessary in Django < 1.7
-   pass
+    # Setup isn't necessary in Django < 1.7
+    pass
 
-from django.conf import settings
-from qiniustorage.backends import QiniuPrivateStorage, QiniuFile, get_qiniu_config
-from qiniustorage.utils import QiniuError
+
 
 USING_TRAVIS = os.environ.get('USING_TRAVIS', None) is None
 
@@ -50,7 +50,7 @@ class QiniuStorageTest(unittest.TestCase):
         )
 
     def test_read_file(self):
-        ASSET_FILE_NAMES =  [u'Read.txt', u'读.txt']
+        ASSET_FILE_NAMES = [u'Read.txt', u'读.txt']
         for assert_file_name in ASSET_FILE_NAMES:
             REMOTE_PATH = join(UNIQUE_PATH, assert_file_name)
 
